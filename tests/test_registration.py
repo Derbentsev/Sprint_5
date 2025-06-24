@@ -1,3 +1,7 @@
+from tests.data import data
+from tests.data import locators
+from tests.data import urls
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
@@ -11,33 +15,30 @@ def fill_registration_form(driver, user_name, user_email, user_password):
     try:
         WebDriverWait(driver, 15).until(
             expected_conditions.visibility_of_element_located(
-                (By.XPATH, '//label[contains(.,  "Имя")]/following-sibling::input'))
+                *locators.locator_login_user_name)
         ).send_keys(user_name)
         
-        driver.find_element(By.XPATH, 
-                            '//label[contains(., "Email")]/following-sibling::input').send_keys(user_email)
+        driver.find_element(*locators.locator_login_user_email).send_keys(user_email)
         
-        driver.find_element(By.XPATH,
-                            '//label[contains(., "Пароль")]/following-sibling::input').send_keys(user_password)
+        driver.find_element(*locators.locator_login_user_password).send_keys(user_password)
 
-        driver.find_element(By.XPATH,
-                            '//button[text()="Зарегистрироваться"]').click()
+        driver.find_element(*locators.locator_register_button).click()
         
         return True
     except:
         return False
 
 
-def test_registration_success(user_name_fx, user_email_random_fx, user_password_fx):
+def test_registration_success():
     driver = webdriver.Chrome()
-    driver.get('https://stellarburgers.nomoreparties.site/register')
+    driver.get(urls.url_register_page)
 
     try:
-        fill_registration_form(driver, user_name_fx, user_email_random_fx, user_password_fx)
+        fill_registration_form(driver, data.user_name, data.user_email, data.user_password)
 
         WebDriverWait(driver, 15).until(
             expected_conditions.element_to_be_clickable(
-                (By.XPATH, '//button[text()="Войти"]')
+                *locators.locator_login_user_enter_button
             )
         )
 
@@ -48,15 +49,15 @@ def test_registration_success(user_name_fx, user_email_random_fx, user_password_
         driver.quit()
 
 
-def test_registration_password_small_failed(user_name_fx, user_email_fx):
+def test_registration_password_small_failed():
     user_password_wrong = '123'
 
     driver = webdriver.Chrome()
-    driver.get('https://stellarburgers.nomoreparties.site/register')
+    driver.get(urls.url_register_page)
     
     try:
-        fill_registration_form(driver, user_name_fx, user_email_fx, user_password_wrong)
-        driver.find_element(By.XPATH, '//p[text()="Некорректный пароль"]')
+        fill_registration_form(driver, data.user_name, data.user_email, user_password_wrong)
+        driver.find_element(*locators.locator_wrong_password_text)
     except:
         assert False
     finally:
