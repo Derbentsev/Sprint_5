@@ -9,13 +9,13 @@ from selenium.webdriver.support.wait import WebDriverWait
 class TestRegistrationUser:
     def test_registration_success(chrome_driver, fill_registration_form_factory):
         driver = chrome_driver
-        driver.get(urls.url_register_page)
+        driver.get(urls.url_register_page())
 
         fill_registration_form_factory(driver, data.user_name, data.user_email, data.user_password)
 
         WebDriverWait(driver, 15).until(
             expected_conditions.element_to_be_clickable(
-                *locators.locator_login_user_enter_button
+                *locators.locator_login_user_enter_button()
             )
         )
 
@@ -26,8 +26,8 @@ class TestRegistrationUser:
         user_password_wrong = '123'
 
         driver = chrome_driver
-        driver.get(urls.url_register_page)
+        driver.get(urls.url_register_page())
         
         fill_registration_form_factory(driver, data.user_name, data.user_email, user_password_wrong)
-        driver.find_element(*locators.locator_wrong_password_text)
+        driver.find_element(*locators.locator_wrong_password_text())
         assert True

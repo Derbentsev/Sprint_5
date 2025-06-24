@@ -13,8 +13,11 @@ def locator_login_user_password():
     return (By.XPATH, '//label[contains(., "Пароль")]/following-sibling::input')
 
 
-def locator_login_user_enter_button():
+def locator_login_user_enter_button_personal_account():
     return (By.XPATH, '//button[text()="Войти"]')
+
+def locator_login_user_enter_button_registration_form():
+    return (By.XPATH, '//a[text()="Войти"]')
 
 
 def locator_personal_account_button():

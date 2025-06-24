@@ -7,90 +7,81 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 
 class TestPersonalAccount:
-    def test_login_via_enter_account_success(register_user_factory, chrome_driver):
-        driver = chrome_driver
-        driver.get(urls.url_main_page)
+    def test_login_via_enter_account_success(self, driver, login_user_method_factory):
+        driver.get(urls.url_main_page())
 
         WebDriverWait(driver, 7).until(
             expected_conditions.element_to_be_clickable(
-                *locators.locator_login_user_enter_account_button
+                locators.locator_login_user_enter_account_button()
             )
         ).click()
 
-        register_user_factory(driver, data.user_email, data.user_password)
-        assert True
+        assert login_user_method_factory(driver, data.user_email(), data.user_password())
 
 
-    def test_login_via_personal_account_click_success(register_user_factory, chrome_driver):
-        driver = chrome_driver
-        driver.get(urls.url_main_page)
+    def test_login_via_personal_account_click_success(self, driver, login_user_method_factory):
+        driver.get(urls.url_main_page())
 
         WebDriverWait(driver, 7).until(
             expected_conditions.element_to_be_clickable(
-                *locators.locator_personal_account_button
+                locators.locator_personal_account_button()
             )
         ).click()
 
-        register_user_factory(driver, data.user_email, data.user_password)
-        assert True
+        assert login_user_method_factory(driver, data.user_email(), data.user_password())
 
 
-    def test_login_via_registration_form_success(register_user_factory, chrome_driver):
-        driver = chrome_driver
-        driver.get(urls.url_register_page)
+    def test_login_via_registration_form_success(self, driver, login_user_method_factory):
+        driver.get(urls.url_register_page())
 
         WebDriverWait(driver, 7).until(
             expected_conditions.element_to_be_clickable(
-                *locators.locator_login_user_enter_button
+                locators.locator_login_user_enter_button_registration_form()
             )
         ).click()
 
-        register_user_factory(driver, data.user_email, data.user_password)
-        assert True
+        assert login_user_method_factory(driver, data.user_email(), data.user_password())
 
 
-    def test_login_via_recover_password_success(register_user_factory, chrome_driver):
-        driver = chrome_driver
-        driver.get(urls.url_login_page)
+    def test_login_via_recover_password_success(self, driver, login_user_method_factory):
+        driver.get(urls.url_login_page())
 
         WebDriverWait(driver, 7).until(
             expected_conditions.element_to_be_clickable(
-                *locators.locator_recover_password_link
+                locators.locator_recover_password_link()
             )
         ).click()
 
         WebDriverWait(driver, 7).until(
             expected_conditions.element_to_be_clickable(
-                *locators.locator_login_user_enter_button
+                locators.locator_login_user_enter_button_registration_form()
             )
         ).click()
 
-        register_user_factory(driver, data.user_email, data.user_password)
-        assert True
+        assert login_user_method_factory(driver, data.user_email(), data.user_password())
 
 
-    def test_logout_via_press_exit_button_success(register_user_factory, chrome_driver):
-        driver = chrome_driver
-        driver.get(urls.url_main_page)
+    def test_logout_via_press_exit_button_success(self, driver, login_user_method_factory):
+        driver.get(urls.url_main_page())
 
         WebDriverWait(driver, 7).until(
             expected_conditions.element_to_be_clickable(
-                *locators.locator_personal_account_button
+                locators.locator_personal_account_button()
             )
         ).click()
 
-        register_user_factory(driver, data.user_email, data.user_password)
+        login_user_method_factory(driver, data.user_email(), data.user_password())
 
         WebDriverWait(driver, 7).until(
             expected_conditions.visibility_of_element_located(
-                *locators.locator_exit_account_button
+                locators.locator_exit_account_button()
             )
         ).click()
 
-        WebDriverWait(driver, 7).until(
+        element = WebDriverWait(driver, 7).until(
             expected_conditions.visibility_of_element_located(
-                *locators.locator_login_user_enter_button
+                locators.locator_login_user_enter_button_personal_account()
             )
         )
             
-        assert True
+        assert element.is_displayed()

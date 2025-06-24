@@ -1,7 +1,5 @@
 import pytest
-from tests.data import data
 from tests.data import locators
-from tests.data import urls
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -10,29 +8,28 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 
 @pytest.fixture
-def chrome_driver():
+def driver():
     driver = webdriver.Chrome()
     yield driver
     driver.quit()
 
 
 @pytest.fixture
-def login_user_method_fx(chrome_driver):
-    chrome_driver.get(urls.url_login_account)
+def login_user_method_factory():
+    def login_user_method(driver, user_email, user_password):
+        driver.find_element(*locators.locator_login_user_email()).send_keys(user_email)    
+        driver.find_element(*locators.locator_login_user_password()).send_keys(user_password)
+        driver.find_element(*locators.locator_login_user_enter_button_personal_account()).click()
+        driver.find_element(*locators.locator_personal_account_button()).click()
 
-    chrome_driver.find_element(*locators.locator_login_user_email).send_keys(data.user_email)    
-    chrome_driver.find_element(*locators.locator_login_user_password).send_keys(data.user_password)
-    chrome_driver.find_element(*locators.locator_login_user_enter_button).click()
-    chrome_driver.find_element(*locators.locator_personal_account_button).click()
-
-    WebDriverWait(chrome_driver, 10).until(
-        expected_conditions.visibility_of_element_located(
-            *locators.locator_personal_profile_text
+        element = WebDriverWait(driver, 5).until(
+            expected_conditions.visibility_of_element_located(
+                locators.locator_personal_profile_text()
+            )
         )
-    )
+        return element.is_displayed()
 
-    chrome_driver.find_element(*locators.locator_logo_text).click()
-    yield chrome_driver
+    return login_user_method
 
 
 @pytest.fixture
@@ -40,12 +37,12 @@ def register_user_factory():
     def register_user(driver, user_email, user_password):
         driver.find_element(*locators.locator_login_user_email).send_keys(user_email)        
         driver.find_element(*locators.locator_login_user_password).send_keys(user_password)
-        driver.find_element(*locators.locator_login_user_enter_button).click()
+        driver.find_element(*locators.locator_login_user_enter_button_personal_account).click()
         driver.find_element(*locators.locator_personal_account_button).click()
 
         WebDriverWait(driver, 5).until(
             expected_conditions.visibility_of_element_located(
-                *By.XPATH, locators.locator_personal_profile_text
+                locators.locator_personal_profile_text()
             )
         )
         
@@ -78,11 +75,11 @@ def fill_registration_form_factory():
 
         WebDriverWait(driver, 15).until(
             expected_conditions.visibility_of_element_located(
-                *locators.locator_login_user_name)
+                locators.locator_login_user_name())
         ).send_keys(user_name)
         
-        driver.find_element(*locators.locator_login_user_email).send_keys(user_email)            
-        driver.find_element(*locators.locator_login_user_password).send_keys(user_password)
-        driver.find_element(*locators.locator_register_button).click()
+        driver.find_element(*locators.locator_login_user_email()).send_keys(user_email)            
+        driver.find_element(*locators.locator_login_user_password()).send_keys(user_password)
+        driver.find_element(*locators.locator_register_button()).click()
 
     return fill_registration_form
