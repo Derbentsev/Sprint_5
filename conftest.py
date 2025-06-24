@@ -59,11 +59,13 @@ def enter_section_factory():
         )
         driver.execute_script('arguments[0].click()', element)
 
-        WebDriverWait(driver, 7).until(
+        element = WebDriverWait(driver, 7).until(
             expected_conditions.visibility_of_element_located(
                 (By.XPATH, f'//h2[text()="{section_name}"]')
             )
         )
+
+        return element.is_displayed()
         
     return enter_section
 
