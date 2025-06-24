@@ -35,10 +35,10 @@ def login_user_method_factory():
 @pytest.fixture
 def register_user_factory():
     def register_user(driver, user_email, user_password):
-        driver.find_element(*locators.locator_login_user_email).send_keys(user_email)        
-        driver.find_element(*locators.locator_login_user_password).send_keys(user_password)
-        driver.find_element(*locators.locator_login_user_enter_button_personal_account).click()
-        driver.find_element(*locators.locator_personal_account_button).click()
+        driver.find_element(*locators.locator_login_user_email()).send_keys(user_email)        
+        driver.find_element(*locators.locator_login_user_password()).send_keys(user_password)
+        driver.find_element(*locators.locator_login_user_enter_button_personal_account()).click()
+        driver.find_element(*locators.locator_personal_account_button()).click()
 
         WebDriverWait(driver, 5).until(
             expected_conditions.visibility_of_element_located(
@@ -68,7 +68,7 @@ def enter_section_factory():
     return enter_section
 
 
-#Заполняем форму регистрации и логинимся
+@pytest.fixture
 def fill_registration_form_factory():
     def fill_registration_form(driver, user_name, user_email, user_password):
         print(f'{user_email} : {user_password}')
